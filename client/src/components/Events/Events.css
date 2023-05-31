@@ -1,0 +1,26 @@
+.googleMap{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%)
+}
+
+
+
+  #box{
+ 
+    background-color: white;
+    min-width: 300;
+    padding: 40px;    
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-right: -50%;
+      transform: translate(-50%, -50%)
+ 
+  
+  }
+

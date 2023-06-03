@@ -12,15 +12,14 @@ module.exports.readPost = async (req, res) => {
         res.send(posts);
     } catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ message: err.message });
     }
 };
 
 module.exports.createPost = async (req, res) => {
-
     let fileName;
 
-    if (req.file !== null) {
+    if (req.file !== null && req.file !== undefined ) {
         try {
             if (!/\.(jpg|jpeg|png)$/i.test(req.file.originalname)) {
                 throw Error("invalid file");
@@ -28,9 +27,9 @@ module.exports.createPost = async (req, res) => {
 
             if (req.file.size > 500000) throw Error("max size")
         } catch (err) {
-            const errors = uploadErrors(err);
-            return res.status(500).send({ errors });
-        }
+            console.log(err);
+            res.status(500).json({ message: err.message });
+          }
 
         console.log('req.file', req.file);
         // Get the file object from the request
@@ -58,8 +57,9 @@ module.exports.createPost = async (req, res) => {
         const post = await newPost.save();
         return res.status(201).json(post);
     } catch (err) {
-        return res.status(400).send(err);
-    }
+        console.log(err);
+        res.status(500).json({ message: err.message });
+      }
 };
 
 module.exports.updatePost = async (req, res) => {
@@ -80,6 +80,8 @@ module.exports.updatePost = async (req, res) => {
         res.send(updatedPost);
     } catch (err) {
         console.log("Update error: " + err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal server error");
     }
 };
@@ -94,6 +96,8 @@ module.exports.deletePost = async (req, res) => {
         res.send(deletedPost);
     } catch (err) {
         console.log("Delete error: " + err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal server error");
     }
 };
@@ -132,6 +136,8 @@ module.exports.likePost = async (req, res) => {
         res.send({ post, user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         return res.status(500).send("Internal server error");
     }
 };
@@ -170,6 +176,7 @@ module.exports.unlikePost = async (req, res) => {
         res.send({ post, user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
         return res.status(500).send("Internal server error");
     }
 
@@ -204,6 +211,8 @@ module.exports.commentPost = async (req, res) => {
         res.send(post);
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         return res.status(500).send("Internal server error");
     }
 };
@@ -234,6 +243,8 @@ module.exports.editCommentPost = async (req, res) => {
         res.status(200).send(post);
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal Server Error");
     }
 };

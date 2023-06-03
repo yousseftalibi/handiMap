@@ -3,6 +3,7 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import ParkingSpotInfo from './ParkingSpotInfo';
 import { Carousel } from 'react-responsive-carousel';
 import './GoogleMapsApi.css';
+import LeftNav from "../../Shared/leftNav";
 
 const containerStyle = {
     width: '60vw',
@@ -33,9 +34,10 @@ const MapComponent = (props) => {
  
     return isLoaded ? (
         <>
+        <LeftNav />
 
       <div class="googleMap">
-
+        
               <GoogleMap
                   mapContainerStyle={containerStyle}
                   zoom={13}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import MapComponent from './GoogleMapsApi';
+
+
 const LocateMe = () => {
   
   const [parkingLotsPoints, setParkingLotsPoints] = useState();

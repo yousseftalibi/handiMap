@@ -10,7 +10,7 @@ const leftNav = () => {
                     <img src="./img/icons/home.svg" alt="home"/>
                 </NavLink>
                 <br/>
-                <NavLink to='/trending' exact activeClassName="active-left-nav">
+                <NavLink to='/parkings' exact activeClassName="active-left-nav">
                     <img src="./img/icons/rocket.svg" alt="home"/>
                 </NavLink>
                 <br/>

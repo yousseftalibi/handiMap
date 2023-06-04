@@ -1,51 +1,441 @@
 
+FILE: ./client/src/actions/post.actions.js
+
+import axios from "axios";
+
+
+
+
+//posts
+
+export const GET_POSTS = "GET_POSTS";
+
+export const ADD_POST = "ADD_POST";
+
+export const LIKE_POST = "LIKE_POST";
+
+export const UNLIKE_POST = "UNLIKE_POST";
+
+export const UPDATE_POST = "UPDATE_POST";
+
+export const DELETE_POST = "DELETE_POST";
+
+
+
+
+
+
+//comments
+
+export const ADD_COMMENT = "ADD_COMMENT";
+
+export const EDIT_COMMENT = "EDIT_COMMENT";
+
+export const DELETE_COMMENT = "DELETE_COMMENT";
+
+
+
+
+
+export const getPosts = ( num ) => {
+
+    return (dispatch) => {
+
+        return axios
+
+            .get(`${process.env.REACT_APP_API_URL}api/post/`)
+
+            .then((res) => {
+
+                const array = res.data.slice(0,num)
+
+                dispatch({type: GET_POSTS, payload: array})
+
+            })
+
+            .catch((err) => console.log(err))
+
+    }
+
+}
+
+
+
+
+export const addPost = (data) => {
+
+    return (dispatch) => {
+
+        return axios
+
+            .post(`${process.env.REACT_APP_API_URL}api/post/`, data)
+
+    }
+
+}
+
+
+
+
+
+export const likePost = (postId, userId) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'patch',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/like-post/` + postId,
+
+            data: {id: userId},
+
+        })
+
+        .then((res) => {
+
+            dispatch({type: LIKE_POST, payload: { postId, userId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    };
+
+}
+
+
+
+
+export const unlikePost = (postId, userId) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'patch',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/unlike-post/` + postId,
+
+            data: {id: userId},
+
+        })
+
+        .then((res) => {
+
+            dispatch({type: UNLIKE_POST, payload: { postId, userId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    };
+
+}
+
+
+
+
+export const updatePost = (postId, message) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'put',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/${postId}`,
+
+            data: {message}
+
+        })
+
+        .then((res) => {
+
+            dispatch({ type: UPDATE_POST, payload: {message, postId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    };
+
+};
+
+
+
+
+export const deletePost = (postId) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'delete',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/${postId}`
+
+        })
+
+        .then((res) => {
+
+            dispatch({ type: DELETE_POST, payload: {postId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    };
+
+}
+
+
+
+
+export const addComment = (postId, commenterId, text, commenterPseudo) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'patch',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/comment-post/${postId}`,
+
+            data: {commenterId, text, commenterPseudo}
+
+        })
+
+        .then((res) => {
+
+            dispatch({ type: ADD_COMMENT, payload: {postId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    }
+
+}
+
+
+
+
+
+export const editComment = (postId, commentId, text) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'patch',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/edit-comment-post/${postId}`,
+
+            data: {commentId, text},
+
+        })
+
+        .then((res) => {
+
+            dispatch({ type: EDIT_COMMENT, payload: {postId, commentId, text}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    }
+
+}
+
+
+
+
+export const deleteComment = (postId, commentId) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: 'patch',
+
+            url: `${process.env.REACT_APP_API_URL}api/post/delete-comment-post/${postId}`,
+
+            data: {commentId},
+
+        })
+
+        .then((res) => {
+
+            dispatch({ type: DELETE_COMMENT, payload: {postId, commentId}});
+
+        })
+
+        .catch((err) => console.log(err));
+
+    }
+
+}
+
+
+
+
 FILE: ./client/src/actions/user.actions.js
 
 import axios from "axios";
 
+
 export const GET_USER = "GET_USER";
+
 export const UPLOAD_PICTURE = "UPLOAD_PICTURE";
-export const UPDATE_BIO = "UPDATE_BIO"
+
+export const UPDATE_BIO = "UPDATE_BIO";
+
+export const FOLLOW_USER = "FOLLOW_USER";
+
+export const UNFOLLOW_USER = "UNFOLLOW_USER"
+
+
 
 export const getUser = (uid) => {
+
     return (dispatch) => {
+
         return axios
+
             .get(`${process.env.REACT_APP_API_URL}api/user/${uid}`)
+
             .then((res)=> {
+
                 dispatch({type: GET_USER, payload: res.data});
+
             })
+
             .catch((err) => console.log(err));
+
     };
+
 };
+
+
+
 
 export const uploadPicture = (data, id) => {
+
     return  (dispatch) => {
+
         return axios
+
             .post(`${process.env.REACT_APP_API_URL}api/user/upload`,data)
+
             .then((res) => {
+
                 return axios
+
                     .get(`${process.env.REACT_APP_API_URL}api/user/${id}`)
+
                     .then((res) =>{
+
                         dispatch({type: UPLOAD_PICTURE, payload: res.data.picture})
+
                     })
+
             })
+
             .catch((err) => console.log(err))
+
     };
+
 };
 
+
+
+
 export const updateBio = (userId, bio) =>{
+
     return (dispatch) => {
+
         return axios({
+
             method:"put",
+
             url: `${process.env.REACT_APP_API_URL}api/user/`+userId,
+
             data: {bio}
+
         })
+
         .then((res) =>{
+
             dispatch({type: UPDATE_BIO, payload: bio})
+
         })
+
         .catch((err) => console.log(err))
+
     }
+
 }
+
+
+
+
+export const followUser = (followerId, idToFollow) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: "patch",
+
+            url: `${process.env.REACT_APP_API_URL}api/user/follow/` + followerId,
+
+            data: {idToFollow},
+
+        })
+
+        .then((res) =>{
+
+            dispatch({type: FOLLOW_USER, payload: {idToFollow}})
+
+        })
+
+        .catch((err) => console.log(err))
+
+    }
+
+}
+
+
+
+
+export const unfollowUser = (followerId, idToUnFollow) => {
+
+    return (dispatch) => {
+
+        return axios({
+
+            method: "patch",
+
+            url: `${process.env.REACT_APP_API_URL}api/user/unfollow/` + followerId,
+
+            data: {idToUnFollow},
+
+        })
+
+            .then((res) =>{
+
+            dispatch({type: UNFOLLOW_USER, payload: {idToUnFollow}});
+
+            })
+
+        .catch((err) => console.log(err));
+
+    };
+
+}
+
+
 FILE: ./client/src/actions/users.actions.js
 
 import axios from "axios";
@@ -509,7 +899,7 @@ const Events = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyDch5OcDgWH-sKCF5rDQq3yYJy8O0eyRuE",
+    googleMapsApiKey: "AIzaSyD_mTJq6vddk8brD_c7PCShWDj0NWDrrcg",
   });
 
   const location = { lat: latitude, lng: longitude };
@@ -586,16 +976,73 @@ const Events = () => {
 export default Events;
 FILE: ./client/src/components/Home/home.js
 
+import React, { useContext } from "react";
+
+import LeftNav from "../../Shared/leftNav";
+
+import Thread from "../../Shared/Thread";
+
+import { UidContext } from "../../Shared/AppContext";
+
+import NewPostForm from "../Post/NewPostForm";
+
+import Log from "../Authentification/Login"
+
+import FriendsHint from "../Profil/FriendsHint";
+
 const Home = () => {
-    return (
-        <>
-    
-        </>
-    );
+
+  const uid = useContext(UidContext);
+
+  return (
+
+    <div className="home">
+
+      <LeftNav />
+
+      <div className="main">
+
+        <div className="home-header">
+
+          {uid ? <NewPostForm /> : <Log signin={true} signup={false} />}
+
+        </div>
+
+        <Thread />
+
+      </div>
+
+      <div className="right-side">
+
+        <div className="right-side-container">
+
+          <div className="wrapper">
+
+            {uid && <FriendsHint />}
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+
+
+
+      
+
+    </div>
+
+  );
+
 };
 
-export default Home;
 
+
+
+export default Home;
 FILE: ./client/src/components/ParkingLots/GoogleMapsApi.js
 
 import React from 'react'
@@ -603,6 +1050,7 @@ import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import ParkingSpotInfo from './ParkingSpotInfo';
 import { Carousel } from 'react-responsive-carousel';
 import './GoogleMapsApi.css';
+import LeftNav from "../../Shared/leftNav";
 
 const containerStyle = {
     width: '60vw',
@@ -621,7 +1069,7 @@ const MapComponent = (props) => {
       
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: 'AIzaSyDch5OcDgWH-sKCF5rDQq3yYJy8O0eyRuE'
+        googleMapsApiKey: 'AIzaSyD_mTJq6vddk8brD_c7PCShWDj0NWDrrcg'
     })
     const location = {
         lat: props.latitude,
@@ -633,9 +1081,10 @@ const MapComponent = (props) => {
  
     return isLoaded ? (
         <>
+        <LeftNav />
 
       <div class="googleMap">
-
+        
               <GoogleMap
                   mapContainerStyle={containerStyle}
                   zoom={13}
@@ -676,6 +1125,8 @@ FILE: ./client/src/components/ParkingLots/ParkingLots.js
 
 import React, { useState, useEffect } from 'react';
 import MapComponent from './GoogleMapsApi';
+
+
 const LocateMe = () => {
   
   const [parkingLotsPoints, setParkingLotsPoints] = useState();
@@ -751,9 +1202,739 @@ const ParkingSpotInfo = ({ parkingSpot }) => {
 
 export default ParkingSpotInfo;
 
+FILE: ./client/src/components/Post/Card.js
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { dateParser, isEmpty } from "../../Shared/utils";
+import LikeButton from "./LikeButton";
+import { updatePost } from "../../actions/post.actions";
+import DeleteCard from "./DeleteCard";
+import CardComments from "./CardComments";
+
+const Card = ({ post }) => {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isUpdated,setIsUpdated] = useState(false);
+  const [textUpdate,setTextUpdate] = useState(null);
+  const [showComments, setShowComments] = useState(false);
+  const usersData = useSelector((state) => state.usersReducer);
+  const userData = useSelector((state) => state.userReducer);
+  const dispatch = useDispatch();
+
+  const updateItem = async () => {
+    if(textUpdate) {
+      dispatch(updatePost(post._id, textUpdate))
+    }
+    setIsUpdated(false);
+ }
+
+  useEffect(() => {
+    !isEmpty(usersData[0]) && setIsLoading(false);
+
+  }, [usersData])
+
+  return (
+    <li className="card-container" key={postMessage._id} >
+      {isLoading ? (
+        <i className="fas fa-spinner fa-spin"></i>
+      ) : (
+        <>
+          <div className="card-left">
+            <img src={
+              !isEmpty(usersData[0]) &&
+              usersData.map((user) => {
+                if (user._id === post.posterId) return user.picture
+                else return null
+              }).join('')
+            }
+              alt="poster-pic"
+            />
+          </div>
+          <div className="card-right">
+            <div className="card-header">
+              <div className="pseudo">
+                <h3>
+                  {
+                    !isEmpty(usersData[0]) &&
+                    usersData.map((user) => {
+                      if (user._id === post.posterId) return user.pseudo;
+                      else return null
+                    }).join('')
+                  }
+                </h3>
+              </div>
+              <span>{dateParser(post.createdAt)}</span>
+            </div>
+            {isUpdated === false && <p>{post.message}</p>}
+            {isUpdated && (
+              <div className="update-post">
+                <textarea 
+                  defaultValue={post.message}
+                  onChange={(e) => setTextUpdate(e.target.value)}
+                />
+                <div className="button-container">
+                  <button className="btn" onClick={updateItem}>
+                      Update
+                  </button>
+                </div>
+              </div>
+
+            )}
+        
+        { !post.picture && (
+                  <img src={post.picture} alt="card-pic" className="card-pic" />
+                )}
+            {post.video && (
+              <iframe
+                width="500"
+                height="300"
+                src={post.video}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media;
+                          gyroscope; picture-in-picture"
+                allowFullScreen
+                title={post._id}
+              ></iframe>
+            )}
+            {userData._id === post.posterId && (
+              <div className="button-container">
+                <div onClick={() => setIsUpdated(!isUpdated)}>
+                  <img src="./img/icons/edit.svg" alt="edit" />
+                </div> 
+                <DeleteCard id={post._id} />
+              </div>
+            )}
+            <div className="card-footer">
+              <div className="comment-icon">
+                < img onClick={() => setShowComments(!showComments)} 
+                src="./img/icons/message1.svg" alt="comment" />
+                <span>{post.comments.length}</span>
+              </div>
+              <LikeButton post={post}/>
+            </div>
+            {showComments && <CardComments post={post}/>}
+          </div>
+
+        </>
+      )}
+    </li>
+
+  );
+};
+
+export default Card;
+FILE: ./client/src/components/Post/CardComments.js
+
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { isEmpty, timestampParser } from "../../Shared/utils";
+import { set } from "mongoose";
+import { addComment, getPosts } from "../../actions/post.actions";
+import EditDeleteComment from "./EditDeleteComment";
+
+const CardComments = ({ post }) => {
+    const [text, setText] = useState("");
+    const usersData = useSelector((state) => state.usersReducer);
+    const userData = useSelector((state) => state.userReducer);
+    const dispatch = useDispatch();
+
+    const handleComment = (e) => {
+        e.preventDefault();
+
+        if(text){
+            dispatch(addComment(post._id, userData._id, text, userData.pseudo ))
+                .then(() => dispatch(getPosts()))
+                .then(() => setText(''));
+        }
+     }
+
+    return (
+        <div className="comments-container">
+            {post.comments.map((comment) => {
+                return (
+                    <div className={comment.commenterId === userData._id ? "comment-container client" : "comment-container"} key={comment._id}>
+                        <div className="left-part">
+                            <img src={!isEmpty(usersData[0]) &&
+                                usersData.map((user) => {
+                                    if (user._id === comment.commenterId) return user.picture;
+                                    else return null
+                                }).join('')
+                            }
+                                alt="commenter-pic" />
+                        </div>
+                        <div className="right-part">
+                            <div className="comment-header">
+                                <div className="pseudo">
+                                    <h3>{comment.commenterPseudo}</h3>
+                                </div>
+                                <span>{timestampParser(comment.timestamp)}</span>
+                            </div>
+                            <p>{comment.text}</p>
+                            <EditDeleteComment comment={comment} postId={post._id} />
+                        </div>
+                    </div>
+                );
+            })}
+            {userData._id && (
+                <form action="" onSubmit={handleComment} className="comment-form">
+                    <input type="text" name="text" onChange={(e) => setText(e.target.value)} value={text} placeholder="Ask or Add something?" />
+                    <br />
+                    <input type="submit" value="send" />
+                </form>
+            )}
+        </div>
+    );
+};
+
+export default CardComments;
+FILE: ./client/src/components/Post/DeleteCard.js
+
+import React from "react";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../../actions/post.actions";
+
+const DeleteCard = (props) => {
+  const dispatch = useDispatch();
+
+  const deleteQuote = () => dispatch(deletePost(props.id))
+
+  return(
+    <div onClick={() => {
+      if(window.confirm("Do you want to delete? "))
+        { deleteQuote();
+        }
+    }}>
+    <img src="./img/icons/trash.svg" alt="trash"/>
+    </div>
+  );
+};
+
+export default DeleteCard;
+FILE: ./client/src/components/Post/EditDeleteComment.js
+
+import React, { useContext, useEffect, useState } from "react";
+import { UidContext } from "../../Shared/AppContext";
+import { useDispatch } from "react-redux";
+import { deleteComment, editComment } from "../../actions/post.actions";
+
+const EditDeleteComment = ({ comment, postId }) => {
+    const [isAuthor, setIsAuthor] = useState(false);
+    const [edit, setEdit] = useState(false);
+    const [text, setText] = useState('');
+    const uid = useContext(UidContext);
+    const dispatch = useDispatch();
+
+    const handleEdit = (e) => { 
+        e.preventDefault();
+
+        if(text) {
+            dispatch(editComment(postId, comment._id, text));
+            setText('');
+            setEdit(false);
+        }
+    };
+
+    const handleDelete = () => {
+        dispatch(deleteComment(postId, comment._id));
+    }
+
+    useEffect(() => {
+        const checkAuthor = () => {
+            if (uid === comment.commenterId) {
+                setIsAuthor(true);
+            }
+        }
+        checkAuthor();
+    }, [uid, comment.commenterId])
+
+    return (
+        <div className="edit-comment">
+            {isAuthor && edit === false && (
+                <span onClick={() => setEdit(!edit)}>
+                    <img src="./img/icons/edit.svg" alt="edit-comment" />
+                </span>
+            )}
+            {isAuthor && edit && (
+                <form action="" onSubmit={handleEdit}
+                    className="edit-comment-form">
+                    <label htmlFor="text" onClick={() => setEdit(!edit)}>Edit</label>
+                    <br />
+                    <input type="text" name="text" onChange={(e) =>
+                        setText(e.target.value)} defaultValue={comment.text} />
+                    <br />
+                    <div className="btn">
+                        <span onClick={() => {
+                           if(window.confirm("Do you want to remove?")) {
+                            handleDelete();
+                           }
+                        }}>
+                            <img src="./img/icons/trash.svg" alt="delete"/>
+                            
+                        </span>
+                        <input type="submit" value="Modify" />
+                    </div>
+                    
+                </form>
+            )}
+        </div>
+    );
+};
+
+export default EditDeleteComment;
+FILE: ./client/src/components/Post/LikeButton.js
+
+import React, { useContext, useEffect, useState } from "react";
+import {UidContext} from "../../Shared/AppContext";
+import Popup from "reactjs-popup";
+import 'reactjs-popup/dist/index.css'
+import { useDispatch } from "react-redux";
+import { likePost, unlikePost } from "../../actions/post.actions";
+
+const LikeButton = ({post}) => {
+    const [liked, setLiked] = useState(false);
+    const uid = useContext(UidContext);
+    const dispatch = useDispatch();
+
+    const like = () => {
+        dispatch(likePost(post._id, uid))
+        setLiked(true);
+    }
+
+    const unlike = () => {
+        dispatch(unlikePost(post._id, uid))
+        setLiked(false);
+    }
+
+    useEffect(() => {
+        if(post.likers.includes(uid)) {setLiked(true)}
+        else {setLiked(false) }
+    }, [uid, post.likers, liked])
+
+  return(
+    <div className="like-container">
+    {uid && liked === false && (
+        <img src="./img/icons/heart.svg" onClick={like}  alt="like" />
+    )}
+
+    {uid && liked && (
+        <img src="./img/icons/heart-filled.svg" onClick={unlike}  alt="unlike" />
+    )}
+    <span>{post.likers.length}</span>
+    </div>
+  );
+};
+
+export default LikeButton;
+FILE: ./client/src/components/Post/NewPostForm.js
+
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, timestampParser } from "../../Shared/utils";
+import { NavLink } from "react-router-dom";
+import { addPost, getPosts } from "../../actions/post.actions";
+
+const NewPostForm = () => {
+    const [isLoading, setIsLoading] = useState(true);
+    const [message, setMessage] = useState("");
+    const [postPicture, setPostPicture] = useState(null);
+    const [video, setVideo] = useState('');
+    const [file, setFile] = useState();
+    const userData = useSelector((state) => state.userReducer);
+    const dispatch = useDispatch();
+
+
+    const handlePicture = (e) => {
+        setPostPicture(URL.createObjectURL(e.target.files[0]));
+        setFile(e.target.files[0]);
+        setVideo('');
+    };
+
+    const handlePost = async () => {
+        if(message || postPicture || video.length > 20){
+            const data = new FormData();
+            data.append('posterId', userData._id);
+            data.append('message', message);
+            if(file) data.append("file", file);
+            data.append('video', video);
+
+            await dispatch(addPost(data));
+            dispatch(getPosts());
+
+            cancelPost();
+
+            
+        } else {
+            alert("Nothing to post")
+        }
+    };
+    
+    const cancelPost = () => {
+        setMessage('');
+        setPostPicture('');
+        setVideo('');
+        setFile('');
+    }
+
+
+
+    useEffect(() => {
+        if (!isEmpty(userData)) setIsLoading(false);
+    }, [userData])
+
+
+    return (
+        <div className="post-container">
+            {isLoading ? (
+                <i className="fas fa-spinner fa-pulse"></i>
+            ) : (
+                <>
+                    <div className="data">
+                        <p><span>{userData.following ? userData.following.length : 0}</span>
+                            {" "}Following(s)</p>
+
+                        <p><span>{userData.followers ? userData.followers.length : 0}</span>
+                            {" "}Follower(s)</p>
+                    </div>
+                    <NavLink exact to="/profil">
+                        <div className="user-info">
+                            <img src={userData.picture} alt="user-img" />
+                        </div>
+                    </NavLink>
+                    <div className="post-form">
+                        <textarea
+                            name="message"
+                            id="message"
+                            placeholder="Want to share some informations?"
+                            onChange={(e) => setMessage(e.target.value)}
+                            value={message}
+                        />
+                        {message || postPicture || video.length > 20 ? (
+                            <li className="card-container">
+                                <div className="card-left">
+                                    <img src={userData.picture} alt="user-pic" />
+                                </div>
+                                <div className="card-right">
+                                    <div className="card-header">
+                                        <div className="pseudo">
+                                            <h3>{userData.pseudo}</h3>
+                                        </div> 
+                                        <span>{timestampParser(Date.now())}</span>                                   
+                                    </div>
+                                    <div className="content">
+                                        <p>{message}</p>
+                                        { postPicture !== undefined || postPicture !== null  && <img src={postPicture} alt=""/>}
+                                        {video && (
+                                            <iframe
+                                            width="500"
+                                            height="300"
+                                            src={video}
+                                            frameBorder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media;
+                                                      gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            title={video}
+                                          ></iframe>
+                                        )}
+                                    </div>
+                                </div>
+                            </li>
+                        ): null}
+                        <div className="footer-form">
+                            <div className="icon">
+                                {isEmpty(video) && (
+                                    <>
+                                        <img src="./img/icons/picture.svg" alt="img" />
+                                        <input type="file" id="file-upload" name="file" accept=".jpg, .jpeg, .png"
+                                            onChange={(e) => handlePicture(e)} />
+                                    </>
+                                )}
+                                {video && (
+                                    <button onClick={() => setVideo("")}>Delete video</button>
+                                )}
+                            </div>
+                            <div className="btn-send">
+                                {message || postPicture || video.length > 20 ?
+                                    (<button className="cancel" onClick={cancelPost}>Cancel</button>)
+                                    : null}
+
+                                <button className="send" onClick={handlePost}>Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
+        </div>
+    );
+};
+
+export default NewPostForm;
 FILE: ./client/src/components/Profil/FollowHandler.js
 
+import React, { useEffect, useState } from "react";
 
+import { useDispatch, useSelector } from "react-redux";
+
+import { isEmpty } from "../../Shared/utils";
+
+import { followUser, unfollowUser } from "../../actions/user.actions";
+
+
+
+
+const FollowHandler = ({ idToFollow, type}) => {
+
+
+
+
+    const userData = useSelector((state) => state.userReducer);
+
+    const [isFollowed, setIsFollowed] = useState(false);
+
+    const dispatch = useDispatch();
+
+
+
+
+    const handleFollow = () => {
+
+
+
+
+        dispatch(followUser(userData._id, idToFollow));
+
+        setIsFollowed(true);
+
+    };
+
+
+
+
+    const handleUnFollow = () => {
+
+        dispatch(unfollowUser(userData._id, idToFollow));
+
+        setIsFollowed(false);
+
+    };
+
+
+
+
+    useEffect(() =>{
+
+
+
+
+        if(!isEmpty(userData.following)){
+
+            if(userData.following.includes(idToFollow)){
+
+                setIsFollowed(true);
+
+            } else setIsFollowed(false);
+
+        }
+
+
+
+
+    }, [userData, idToFollow])
+
+
+
+
+  return(
+
+    <>
+
+        {isFollowed && !isEmpty(userData) && (
+
+            <span onClick={handleUnFollow}>
+
+            {type==="suggestion" && <button className="unfollow-btn">Followed</button>}
+
+          </span>
+
+        )}
+
+        {isFollowed ===false && !isEmpty(userData) &&(
+
+            <span onClick={handleFollow}>
+
+            {type==="suggestion" &&<button className="follow-btn">Follow</button>}
+
+          </span>
+
+        )}
+
+      
+
+    </>
+
+  );
+
+};
+
+
+
+
+export default FollowHandler ;
+
+
+FILE: ./client/src/components/Profil/FriendsHint.js
+
+import React, { useEffect, useState } from "react";
+
+import { useSelector } from "react-redux";
+
+import { isEmpty } from "../../Shared/utils";
+
+import FollowHandler from "./FollowHandler";
+
+
+
+
+const FriendsHint = () => {
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    const [playOne, setPlayOne] = useState(true);
+
+    const [friendsHint, setFriendsHint] = useState([]);
+
+    const userData = useSelector((state) => state.userReducer);
+
+    const usersData = useSelector((state) => state.usersReducer);
+
+
+
+
+
+
+    useEffect(() => {
+
+
+
+
+        const notFriendList = () => {
+
+            let array = [];
+
+            usersData.map((user) => {
+
+                if(user._id !== userData._id && !user.followers.includes(userData._id))
+
+                    return array.push(user._id);
+
+            });
+
+            array.sort(()=>0.5 - Math.random());
+
+            if(window.innerHeight > 780) {
+
+                array.length = 10;
+
+            } else if(window.innerHeight > 720){
+
+                array.length = 8;
+
+            } else if(window.innerHeight > 615){
+
+                array.length = 6;
+
+            } else if(window.innerHeight > 540){
+
+                array.length = 4;
+
+            } else {
+
+                array.length = 0;
+
+            }
+
+            setFriendsHint(array);
+
+        }
+
+
+
+
+        if(playOne && !isEmpty(usersData[0]) && !isEmpty(userData._id)){
+
+            notFriendList();
+
+            setIsLoading(false);
+
+            setPlayOne(false);
+
+        }
+
+    }, [usersData, userData, playOne])
+
+
+
+
+  return(
+
+    <div className="get-friends-container">
+
+      <h4>People you can follow</h4>
+
+      {isLoading ? (
+
+        <div className="icon">
+
+            <i className="fas fa-sprinner fa-pulse"></i>
+
+        </div>
+
+      ): (
+
+        <ul>
+
+           {friendsHint && friendsHint.map((user) => {
+
+                for(let i=0; i< usersData.length; i++){
+
+                    if(user=== usersData[i]._id) {
+
+                        return(
+
+                            <li className="user-hint" key={user}>
+
+                                <img src={usersData[i].picture} alt="user-pic" />
+
+                                <p>{usersData[i].pseudo}</p>
+
+                                <FollowHandler idToFollow={usersData[i]._id} type=
+
+                                {"suggestion"} />
+
+                            </li>
+
+                        )
+
+                    }
+
+                }
+
+           })}
+
+        </ul>
+
+      ) }
+
+    </div>
+
+  );
+
+};
+
+
+
+
+export default FriendsHint;
 FILE: ./client/src/components/Profil/profil.js
 
 import React, { useContext } from "react";
@@ -788,107 +1969,226 @@ import { useDispatch, useSelector } from "react-redux";
 import UploadImg from "./UploadImg";
 import { updateBio } from "../../actions/user.actions";
 import { dateParser } from "../../Shared/utils";
+import FollowHandler from "./FollowHandler";
+
 
 const UpdateProfil = () => {
+
     const [bio, setBio] = useState('');
+
     const [updateForm, setUpdateForm] = useState(false);
+
     const userData = useSelector((state) => state.userReducer);
+
     const usersData = useSelector((state) => state.usersReducer);
+
     const dispatch = useDispatch();
+
     const [followingPopup, setFollowingPopup] = useState(false);
+
     const [followersPopup, setFollowersPopup] = useState(false);
 
+
+
+
     const handleUpdate = () => {
+
         dispatch(updateBio(userData._id, bio));
+
         setUpdateForm(false);
+
     }
 
+
+
+
     return (
+
         <div className="profil-container">
+
             <LeftNav />
+
             <h1> Profil de {userData.pseudo}</h1>
+
             <div className="update-container">
+
                 <div className="left-part">
+
                     <h3>Photo de profil</h3>
+
                     <img src={userData.picture} alt="user-pic" />
+
                     <UploadImg />
+
                 </div>
+
                 <div className="right-part">
+
                     <div className="bio-update">
+
                         <h3>Bio</h3>
+
                         {updateForm === false && (
+
                             <>
+
                                 <p onClick={() => setUpdateForm(!updateForm)}>{userData.bio}</p>
+
                                 <button onClick={() => setUpdateForm(!updateForm)}>Modifier</button>
+
                             </>
+
                         )}
+
                         {updateForm && (
+
                             <>
+
                                 <textarea type="text" defaultValue={userData.bio} onChange={(e) => setBio(e.target.value)}></textarea>
+
                                 <button onClick={handleUpdate}> Validate modifications</button>
+
                             </>
+
                         )}
+
                     </div>
+
                     <br />
+
                     <h4>Member since: {dateParser(userData.createdAt)}</h4>
+
                     <h5 onClick={() => setFollowingPopup(true)}> Following: {userData.following ? userData.following.length : ""}</h5>
+
                     <h5 onClick={() => setFollowersPopup(true)}> followers: {userData.followers ? userData.followers.length : ""}</h5>
+
                 </div>
+
             </div>
+
             {followingPopup && (
+
                 <div className="popup-profil-container">
+
                     <div className="modal">
+
                         <h3>Following</h3>
+
                         <span className="cross" onClick={() => setFollowingPopup(false)}>&#10005;</span>
+
                         <ul>
+
                             {usersData.map((user) => {
+
                                 for (let i = 0; i < userData.following.length; i++) {
+
                                     if (user._id === userData.following[i]) {
+
                                         return (
+
                                             <li key={user._id}>
+
                                                 <img src={user.picture} alt="user-pic" />
+
                                                 <h4>{user.pseudo}</h4>
-                                                <h5>FOLLOW HANDLER</h5>
+
+                                                <div className="follow-handler">
+
+                                                    <FollowHandler idToFollow={user._id} type={'suggestion'}/>
+
+                                                </div>
+
                                             </li>
+
                                         );
+
                                     }
+
                                 }
+
+                                return null;
+
                             })}
+
                         </ul>
+
                     </div>
+
                 </div>
+
             )}
+
+
+
 
 
             {followersPopup && (
+
                 <div className="popup-profil-container">
+
                     <div className="modal">
+
                         <h3>followers</h3>
+
                         <span className="cross" onClick={() => setFollowersPopup(false)}>&#10005;</span>
+
                         <ul>
+
                             {usersData.map((user) => {
+
                                 for (let i = 0; i < userData.followers.length; i++) {
+
                                     if (user._id === userData.followers[i]) {
+
                                         return (
+
                                             <li key={user._id}>
+
                                                 <img src={user.picture} alt="user-pic" />
+
                                                 <h4>{user.pseudo}</h4>
-                                                <h5>FOLLOW HANDLER</h5>
+
+                                                <div className="follow-handler">
+
+                                                    <FollowHandler idToFollow={user._id} type={'suggestion'}/>
+
+                                                </div>
+
                                             </li>
+
                                         );
+
                                     }
+
                                 }
+
+                                return null;
+
                             })}
+
                         </ul>
+
                     </div>
+
                 </div>
+
             )}
 
+
+
+
         </div>
+
     );
+
 };
 
+
+
+
 export default UpdateProfil;
+
+
 FILE: ./client/src/components/Profil/UploadImg.js
 
 import React, { useState } from "react";
@@ -922,6 +2222,9 @@ const UploadImg = () => {
 };
 
 export default UploadImg;
+FILE: ./client/src/components/Trending/Trending.js
+
+
 FILE: ./client/src/index.js
 
 import React from 'react';
@@ -952,19 +2255,164 @@ ReactDOM.render(
 
 
 
+FILE: ./client/src/reducers/post.reducer.js
+
+import { DELETE_COMMENT, DELETE_POST, EDIT_COMMENT, GET_POSTS, LIKE_POST, UNLIKE_POST, UPDATE_POST } from "../actions/post.actions";
+
+const initialState = {};
+
+
+
+
+export default function postReducer ( state = initialState, action ) {
+
+    switch (action.type) {
+
+        case GET_POSTS:
+
+            return action.payload;
+
+        case LIKE_POST:
+
+            return state.map((post) => {
+
+                if(post._id === action.payload.postId){
+
+                    return {
+
+                        ...post,
+
+                        likers: [action.payload.userId, ...post.likers]
+
+                    };
+
+                }
+
+                return post;
+
+            });
+
+        case UNLIKE_POST:
+
+            return state.map((post) => {
+
+                if(post._id === action.payload.postId){
+
+                    return{
+
+                        ...post,
+
+                        likers: post.likers.filter((id) => id !== action.payload.userId)
+
+                    }
+
+                }
+
+                return post
+
+            });
+
+        case UPDATE_POST:
+
+            return state.map((post) => {
+
+                if(post._id === action.payload.postId){
+
+                    return {
+
+                        ...post,
+
+                        message: action.payload.message
+
+                    };  
+
+                } else return post;
+
+            });
+
+        case DELETE_POST :
+
+            return state.filter((post) => post._id !== action.payload.postId);
+
+        case EDIT_COMMENT:
+
+            return state.map((post) => {
+
+                if(post._id === action.payload.postId){
+
+                    return {
+
+                        ...post,
+
+                        comments: post.comments.map((comment) =>{
+
+                            if(Comment._id === action.payload.commentId){
+
+                                return {
+
+                                    ...comment,
+
+                                    text: action.payload.text,
+
+                                };
+
+                            } else {
+
+                                return comment;
+
+                            }
+
+                        }),
+
+                    };
+
+                } else return post;
+
+            });
+
+        case DELETE_COMMENT:
+
+            return state.map((post) => {
+
+                if(post._id === action.payload.postId){
+
+                    return {
+
+                        ...post,
+
+                        comments: post.comments.filter((comment) => comment._id !==
+
+                        action.payload.commentId)
+
+                    }
+
+                } else return post
+
+            });
+
+        default:
+
+            return state;
+
+    }
+
+}
+
+
 FILE: ./client/src/reducers/reducers.js
 
 import { combineReducers } from "redux";
 import userReducer from "./user.reducer";
 import usersReducer from "./users.reducer";
-
+import postReducer from "./post.reducer";
 export default combineReducers({
     userReducer,
     usersReducer,
+    postReducer
 })
 FILE: ./client/src/reducers/user.reducer.js
 
-import { GET_USER, UPDATE_BIO, UPLOAD_PICTURE } from "../actions/user.actions";
+import { GET_USER, UPDATE_BIO, UPLOAD_PICTURE, FOLLOW_USER, UNFOLLOW_USER } from "../actions/user.actions";
 
 const initialState = {};
 
@@ -982,10 +2430,37 @@ export default function userReducer(state= initialState, action){
                 ...state,
                 bio: action.payload
             }
-            
+            case FOLLOW_USER :
+
+            return {
+
+                ...state,
+
+                following: [action.payload.idToFollow, ...state.following],
+
+            }
+
+
+        case UNFOLLOW_USER :
+
+            return {
+
+                ...state,
+
+                following: state.following.filter(
+
+                    (id) => id!== action.payload.idToUnFollow
+
+                ),
+
+            };
+
         default:
+
             return state;
+
     }
+
 }
 FILE: ./client/src/reducers/users.reducer.js
 
@@ -1020,11 +2495,13 @@ const Routes = () => {
     <Router>
       <Navbar/>
       <Switch>
+        <Route path="/" exact component={Home} />
         <Route path="/home" exact component={Home} />
         <Route path="/profil" exact component={profil} />
         <Route path="/chat" exact component={Chat} />
         <Route path="/parkings" exact component={LocateMe} />
         <Route path="/events" exact component={Events} />
+        <Route path="/" exact component={Home} />
       </Switch>
     </Router>
 
@@ -1064,7 +2541,7 @@ const leftNav = () => {
                     <img src="./img/icons/home.svg" alt="home"/>
                 </NavLink>
                 <br/>
-                <NavLink to='/trending' exact activeClassName="active-left-nav">
+                <NavLink to='/parkings' exact activeClassName="active-left-nav">
                     <img src="./img/icons/rocket.svg" alt="home"/>
                 </NavLink>
                 <br/>
@@ -1128,19 +2605,172 @@ const Navbar = () => {
 };
 
 export default Navbar;
+FILE: ./client/src/Shared/Thread.js
+
+import React, { useEffect, useState } from "react";
+
+import {useDispatch, useSelector} from 'react-redux';
+
+import { getPosts } from "../actions/post.actions";
+
+import { isEmpty } from "../Shared/utils";
+
+import Card from "../components/Post/Card";
+
+
+
+
+const Thread = () => {
+
+
+    const [loadPost, setLoadPost] = useState(true);
+
+    const [count, setCount] = useState(5);
+
+    const dispatch = useDispatch();
+
+    const posts = useSelector((state) => state.postReducer);
+
+
+
+
+    const loadMore = () => {
+
+        if(window.innerHeight + document.documentElement.scrollTop + 1 >
+
+            document.scrollingElement.scrollHeight){
+
+                setLoadPost(true)
+
+            }
+
+    }
+
+
+
+
+    useEffect(() => {
+
+        if(loadPost) {
+
+            dispatch(getPosts(count));
+
+            setLoadPost(false);
+
+            setCount(count+5);
+
+        }
+
+
+
+
+        window.addEventListener('scroll', loadMore);
+
+        return () => window.removeEventListener('scroll', loadMore)
+
+    }, [loadPost, dispatch, count])
+
+
+
+
+
+  return(
+
+    <div className="thread-container">
+
+      <ul>
+
+        {!isEmpty(posts[0]) && posts.map((post) => {
+
+            return <Card post = {post} key = {post._id} /> ;
+
+        })}
+
+      </ul>
+
+    </div>
+
+  );
+
+};
+
+
+
+
+export default Thread;
 FILE: ./client/src/Shared/utils.js
 
 export const dateParser = (num) => {
-    let options = {hour: "2-digit", minute: "2-digit", second: "2-digit", weekday: "long", year: "numeric", 
-        month: "short", day:"numeric"};
-    
+
+    let options = {
+
+        hour: "2-digit", minute: "2-digit", year: "numeric",
+
+        month: "short", day: "numeric"
+
+    };
+
+
+
+
     let timestamp = Date.parse(num);
 
     let date = new Date(timestamp).toLocaleDateString('En-EN', options);
 
+
+    return date.toString();
+
+
+
+
+};
+
+
+
+
+export const timestampParser = (num) => {
+
+    let options = {
+
+        hour: "2-digit", minute: "2-digit", year: "numeric",
+
+        month: "short", day: "numeric"
+
+    };
+
+
+
+
+    let date = new Date(num).toLocaleDateString('En-EN', options);
+
+
+
+
     return date.toString();
 
 }
+
+
+
+
+
+export const isEmpty = (value) => {
+
+    return (
+
+        value === undefined ||
+
+        value === null ||
+
+        (typeof value === "object" && Object.keys(value).length === 0) ||
+
+        (typeof value === "string" && value.trim().length === 0)
+
+    );
+
+};
+
+
 FILE: ./config/db.js
 
 const mongoose = require("mongoose");
@@ -1247,15 +2877,14 @@ module.exports.readPost = async (req, res) => {
         res.send(posts);
     } catch (err) {
         console.log(err);
-        res.status(500).send('Internal Server Error');
+        res.status(500).json({ message: err.message });
     }
 };
 
 module.exports.createPost = async (req, res) => {
-
     let fileName;
 
-    if (req.file !== null) {
+    if (req.file !== null && req.file !== undefined ) {
         try {
             if (!/\.(jpg|jpeg|png)$/i.test(req.file.originalname)) {
                 throw Error("invalid file");
@@ -1263,9 +2892,9 @@ module.exports.createPost = async (req, res) => {
 
             if (req.file.size > 500000) throw Error("max size")
         } catch (err) {
-            const errors = uploadErrors(err);
-            return res.status(500).send({ errors });
-        }
+            console.log(err);
+            res.status(500).json({ message: err.message });
+          }
 
         console.log('req.file', req.file);
         // Get the file object from the request
@@ -1293,8 +2922,9 @@ module.exports.createPost = async (req, res) => {
         const post = await newPost.save();
         return res.status(201).json(post);
     } catch (err) {
-        return res.status(400).send(err);
-    }
+        console.log(err);
+        res.status(500).json({ message: err.message });
+      }
 };
 
 module.exports.updatePost = async (req, res) => {
@@ -1315,6 +2945,8 @@ module.exports.updatePost = async (req, res) => {
         res.send(updatedPost);
     } catch (err) {
         console.log("Update error: " + err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal server error");
     }
 };
@@ -1329,6 +2961,8 @@ module.exports.deletePost = async (req, res) => {
         res.send(deletedPost);
     } catch (err) {
         console.log("Delete error: " + err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal server error");
     }
 };
@@ -1367,6 +3001,8 @@ module.exports.likePost = async (req, res) => {
         res.send({ post, user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         return res.status(500).send("Internal server error");
     }
 };
@@ -1405,6 +3041,7 @@ module.exports.unlikePost = async (req, res) => {
         res.send({ post, user });
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
         return res.status(500).send("Internal server error");
     }
 
@@ -1439,6 +3076,8 @@ module.exports.commentPost = async (req, res) => {
         res.send(post);
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         return res.status(500).send("Internal server error");
     }
 };
@@ -1469,6 +3108,8 @@ module.exports.editCommentPost = async (req, res) => {
         res.status(200).send(post);
     } catch (err) {
         console.error(err);
+        res.status(500).json({ message: err.message });
+
         res.status(500).send("Internal Server Error");
     }
 };

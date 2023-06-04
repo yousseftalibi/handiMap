@@ -84,7 +84,7 @@ const Events = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: "AIzaSyDch5OcDgWH-sKCF5rDQq3yYJy8O0eyRuE",
+    googleMapsApiKey: "AIzaSyD_mTJq6vddk8brD_c7PCShWDj0NWDrrcg",
   });
 
   const location = { lat: latitude, lng: longitude };

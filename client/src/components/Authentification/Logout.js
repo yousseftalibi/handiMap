@@ -18,8 +18,6 @@ const Logout = () => {
             .catch((err) =>{
             console.log(err);
          })
-
-            //window.location = "/";
     };
 
     return (

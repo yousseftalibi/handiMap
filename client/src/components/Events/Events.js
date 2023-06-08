@@ -9,7 +9,7 @@ import Button from "@mui/material/Button";
 import axios from "axios";
 import "./Events.css";
 import { useSelector } from "react-redux";
-
+import LeftNav from "../../Shared/leftNav";
 
 const Events = () => {
   const [latitude, setLatitude] = useState(0);
@@ -91,6 +91,9 @@ const Events = () => {
 
   return (
     <>
+    <div class='home'>
+        <LeftNav />
+      </div>
       <header className="googleMap">
         {isLoaded && (
           <GoogleMap

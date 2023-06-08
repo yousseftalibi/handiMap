@@ -8,27 +8,29 @@ const NewPostForm = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [postPicture, setPostPicture] = useState(null);
-    const [video, setVideo] = useState('');
     const [file, setFile] = useState();
     const userData = useSelector((state) => state.userReducer);
     const dispatch = useDispatch();
 
 
     const handlePicture = (e) => {
+        e.preventDefault();
         setPostPicture(URL.createObjectURL(e.target.files[0]));
         setFile(e.target.files[0]);
-        setVideo('');
     };
 
-    const handlePost = async () => {
-        if(message || postPicture || video.length > 20){
+    const handlePost = async (e) => {
+        e.preventDefault();
+        if(message || postPicture){
             const data = new FormData();
             data.append('posterId', userData._id);
             data.append('message', message);
-            if(file) data.append("file", file);
-            data.append('video', video);
+            if(file) {
+                data.append("file", file);
+                console.log("file exsits");
+            }
 
-            await dispatch(addPost(data));
+            dispatch(addPost(data));
             dispatch(getPosts());
 
             cancelPost();
@@ -42,12 +44,8 @@ const NewPostForm = () => {
     const cancelPost = () => {
         setMessage('');
         setPostPicture('');
-        setVideo('');
         setFile('');
     }
-
-
-
     useEffect(() => {
         if (!isEmpty(userData)) setIsLoading(false);
     }, [userData])
@@ -79,7 +77,7 @@ const NewPostForm = () => {
                             onChange={(e) => setMessage(e.target.value)}
                             value={message}
                         />
-                        {message || postPicture || video.length > 20 ? (
+                        {message || postPicture ? (
                             <li className="card-container">
                                 <div className="card-left">
                                     <img src={userData.picture} alt="user-pic" />
@@ -93,38 +91,24 @@ const NewPostForm = () => {
                                     </div>
                                     <div className="content">
                                         <p>{message}</p>
-                                        { postPicture !== undefined || postPicture !== null  && <img src={postPicture} alt=""/>}
-                                        {video && (
-                                            <iframe
-                                            width="500"
-                                            height="300"
-                                            src={video}
-                                            frameBorder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media;
-                                                      gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            title={video}
-                                          ></iframe>
-                                        )}
+                                        { <img src={postPicture} alt=""/>}
+                                     
                                     </div>
                                 </div>
                             </li>
                         ): null}
                         <div className="footer-form">
                             <div className="icon">
-                                {isEmpty(video) && (
                                     <>
-                                        <img src="./img/icons/picture.svg" alt="img" />
-                                        <input type="file" id="file-upload" name="file" accept=".jpg, .jpeg, .png"
-                                            onChange={(e) => handlePicture(e)} />
-                                    </>
-                                )}
-                                {video && (
-                                    <button onClick={() => setVideo("")}>Delete video</button>
-                                )}
+                                    <input type="file" id="file-upload" name="file" accept=".jpg, .jpeg, .png" 
+                                       onChange={(e) => handlePicture(e)} />
+                                    <label htmlFor="file-upload" id="file-upload-label">
+                                        <img src="./img/icons/picture.svg" alt="Upload" />
+                                    </label>
+                                    </>                             
                             </div>
                             <div className="btn-send">
-                                {message || postPicture || video.length > 20 ?
+                                {message || postPicture ?
                                     (<button className="cancel" onClick={cancelPost}>Cancel</button>)
                                     : null}
 

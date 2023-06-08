@@ -34,7 +34,9 @@ const MapComponent = (props) => {
  
     return isLoaded ? (
         <>
-        <LeftNav />
+          <div class="home">
+            <LeftNav />
+          </div>
 
       <div class="googleMap">
         

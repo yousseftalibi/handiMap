@@ -6,6 +6,7 @@ import Chat from "../components/chat/chat";
 import profil from "../components/Profil/profil"
 import Events from "../components/Events/Events";
 import LocateMe from "../components/ParkingLots/ParkingLots";
+import FollowingPost from "../components/Home/FollowingPost";
 
 const Routes = () => {
   return (
@@ -19,6 +20,7 @@ const Routes = () => {
         <Route path="/chat" exact component={Chat} />
         <Route path="/parkings" exact component={LocateMe} />
         <Route path="/events" exact component={Events} />
+        <Route path="/followingPost" exact component={FollowingPost} />
         <Route path="/" exact component={Home} />
       </Switch>
     </Router>

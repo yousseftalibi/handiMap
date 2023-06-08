@@ -11,11 +11,10 @@ const Navbar = () => {
     return (
         <nav>
             <div className="nav-container">
-                <div className="logo">
+                <div>
                     <NavLink exact to="/">
-                        <div className="logo">
-                            <img src="./img/handimap.jpg" alt="icon" />
-                            <h3>handiMap</h3>
+                        <div>
+                            <img src="./img/handimap.png" alt="icon" style={{height: "40px", width: "auto", marginLeft: "10px", marginTop: "10px"}}/>
                         </div>
                     </NavLink>
                 </div>

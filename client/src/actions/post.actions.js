@@ -45,35 +45,24 @@ export const getPosts = ( num ) => {
             .then((res) => {
 
                 const array = res.data.slice(0,num)
-
                 dispatch({type: GET_POSTS, payload: array})
 
             })
-
             .catch((err) => console.log(err))
 
     }
-
 }
 
-
-
-
 export const addPost = (data) => {
-
-    return (dispatch) => {
-
+    console.table(data);
+    console.log("addPost");
+    console.log(data);
+    return () => {
         return axios
-
             .post(`${process.env.REACT_APP_API_URL}api/post/`, data)
-
     }
 
 }
-
-
-
-
 
 export const likePost = (postId, userId) => {
 

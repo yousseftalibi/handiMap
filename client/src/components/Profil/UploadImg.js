@@ -21,7 +21,7 @@ const UploadImg = () => {
     <form action="" onSubmit={handlePicture} className="upload-pic">
         <label htmlFor="file">Change your profile Image</label>
         <input type="file" id="file" name="file" accept=".jpg, .jpeg .png"
-        onChange={(e) => setFile(e.target.files[0])}/>
+        onChange={(e) => setFile(e.target.files[0])} style={ {display: 'none'}}/>
         <br/>
         <input type="submit" value="send" />
     </form>

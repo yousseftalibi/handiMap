@@ -6,39 +6,36 @@ import { UidContext } from "../../Shared/AppContext";
 import NewPostForm from "../Post/NewPostForm";
 import Log from "../Authentification/Login"
 import FriendsHint from "../Profil/FriendsHint";
-import Others from "../Profil/Others";
+import FollowingThread from "../../Shared/FollowingThread";
 
-const Home = () => {
-
+const FollowingPost = () => {
   const uid = useContext(UidContext);
+
   return (
     <div className="home">
-      <LeftNav />
-      <div className="main">
 
+      <LeftNav />
+
+      <div className="main">
         <div className="home-header">
           {uid ? <NewPostForm /> : <Log signin={true} signup={false} />}
         </div>
 
-        <Thread />
+        <FollowingThread />
 
       </div>
-
       <div className="right-side">
         <div className="right-side-container">
-
           <div className="wrapper">
+
             {uid && <FriendsHint />}
-          </div><br/>
 
-          <div className="wrapper">
-            {uid && <Others />}
           </div>
-          
         </div>
       </div>
     </div>
+
   );
 };
 
-export default Home;
+export default FollowingPost;

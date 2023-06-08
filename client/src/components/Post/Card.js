@@ -76,21 +76,10 @@ const Card = ({ post }) => {
 
             )}
         
-        { !post.picture && (
+          { post.picture ? (
                   <img src={post.picture} alt="card-pic" className="card-pic" />
-                )}
-            {post.video && (
-              <iframe
-                width="500"
-                height="300"
-                src={post.video}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media;
-                          gyroscope; picture-in-picture"
-                allowFullScreen
-                title={post._id}
-              ></iframe>
-            )}
+                ) : (<div>no image</div>) }
+          
             {userData._id === post.posterId && (
               <div className="button-container">
                 <div onClick={() => setIsUpdated(!isUpdated)}>
@@ -101,8 +90,7 @@ const Card = ({ post }) => {
             )}
             <div className="card-footer">
               <div className="comment-icon">
-                < img onClick={() => setShowComments(!showComments)} 
-                src="./img/icons/message1.svg" alt="comment" />
+                < img src="./img/icons/message1.svg" alt="comment" />
                 <span>{post.comments.length}</span>
               </div>
               <LikeButton post={post}/>
